@@ -1,32 +1,45 @@
 import { useState } from "react";
 import { MousePos } from "./Canvas";
-import styles from "../styles/FunctionList.module.css"
+import styles from "../styles/FunctionList.module.css";
 import classnames from "classnames";
+import { Effect } from "../utils/effect";
 export interface FunctionListProps {
-    functions: FunctionProps[]
+  effects: Effect[];
+  disableFunction: (effect: Effect, to: boolean) => void;
 }
 
-
-const FunctionList:React.FC<FunctionListProps> = ({functions}) => {
-
-
-    return <div className={styles.container}>
-        {functions.map((e,i) => <FunctionButton key={i} {...e}/>)}
+const FunctionList: React.FC<FunctionListProps> = ({
+  effects,
+  disableFunction,
+}) => {
+  return (
+    <div className={styles.container}>
+      {effects.map((e, i) => (
+        <FunctionButton key={i} effect={e} disableFunction={disableFunction} />
+      ))}
     </div>
-}
+  );
+};
 
 export interface FunctionProps {
-    name:string
-    drawFunction: (ctx: CanvasRenderingContext2D, frameCount: number, mousePos: MousePos| undefined) => void
-    disabled: boolean
-    disableFunction: (effect: FunctionProps, to: boolean) => void
+  effect: Effect;
+  disableFunction: (effect: Effect, to: boolean) => void;
 }
 
-const  FunctionButton:React.FC<FunctionProps> = (props) => {
+const FunctionButton: React.FC<FunctionProps> = ({
+  effect,
+  disableFunction,
+}) => {
+  return (
+    <button
+      className={classnames(styles.button, {
+        [styles.disabled]: effect.disabled,
+      })}
+      onClick={() => disableFunction(effect, !effect.disabled)}
+    >
+      {effect.name}
+    </button>
+  );
+};
 
-
-
-    return <button className={classnames(styles.button, {[styles.disabled]: props.disabled})} onClick={() => props.disableFunction(props,!props.disabled)} >{props.name}</button>
-}
-
-export default FunctionList
+export default FunctionList;
