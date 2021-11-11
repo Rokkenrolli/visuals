@@ -1,8 +1,7 @@
-import { useState } from "react";
-import { MousePos } from "./Canvas";
 import styles from "../styles/FunctionList.module.css";
 import classnames from "classnames";
 import { Effect } from "../utils/effect";
+
 export interface FunctionListProps {
   effects: Effect[];
   disableFunction: (effect: Effect, to: boolean) => void;

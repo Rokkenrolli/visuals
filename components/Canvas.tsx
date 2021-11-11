@@ -4,7 +4,7 @@ export interface CanvasProps {
   width: number;
   height: number;
   className?: string;
-  draw: (
+  _render: (
     ctx: CanvasRenderingContext2D,
     frameCount: number,
     mousePos: MousePos | undefined
@@ -16,7 +16,12 @@ export interface MousePos {
   y: number;
 }
 
-const Canvas: React.FC<CanvasProps> = ({ width, height, className, draw }) => {
+const Canvas: React.FC<CanvasProps> = ({
+  width,
+  height,
+  className,
+  _render,
+}) => {
   let mousePos: MousePos | undefined = undefined;
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -54,7 +59,7 @@ const Canvas: React.FC<CanvasProps> = ({ width, height, className, draw }) => {
     //Our draw came here
     const render = () => {
       frameCount = incrementWithBound(frameCount, Number.MAX_SAFE_INTEGER);
-      draw(context, frameCount, mousePos);
+      _render(context, frameCount, mousePos);
       animationFrameId = window.requestAnimationFrame(render);
     };
     render();
@@ -62,7 +67,7 @@ const Canvas: React.FC<CanvasProps> = ({ width, height, className, draw }) => {
     return () => {
       window.cancelAnimationFrame(animationFrameId);
     };
-  }, [draw, mousePos]);
+  }, [_render, mousePos]);
 
   return (
     <div>

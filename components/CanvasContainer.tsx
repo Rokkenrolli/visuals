@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { MousePos } from "./Canvas";
 import Canvas from "./Canvas";
 import FunctionList from "./FunctionList";
@@ -21,7 +21,7 @@ const CanvasContainer: React.FC<CanvasContainerProps> = ({ effectMap }) => {
     setDrawFunctions(temp);
   };
 
-  const draw = (
+  const render = (
     ctx: CanvasRenderingContext2D,
     frameCount: number,
     mousePos: MousePos | undefined
@@ -29,7 +29,16 @@ const CanvasContainer: React.FC<CanvasContainerProps> = ({ effectMap }) => {
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
     Array.from(drawFunctions.values()).forEach((drawObject) => {
       if (!drawObject.disabled) {
-        drawObject.drawFunction(ctx, frameCount, mousePos);
+        drawObject.drawFunction(
+          ctx,
+          frameCount,
+          mousePos,
+          drawObject.particleSystem
+        );
+        if (!drawObject.particleSystem) {
+          return;
+        }
+        drawObject.particleSystem.update();
       }
     });
   };
@@ -40,7 +49,12 @@ const CanvasContainer: React.FC<CanvasContainerProps> = ({ effectMap }) => {
         disableFunction={toggleEffect}
         effects={Array.from(drawFunctions.values())}
       />
-      <Canvas className={styles.canvas} draw={draw} width={900} height={600} />
+      <Canvas
+        className={styles.canvas}
+        _render={render}
+        width={900}
+        height={600}
+      />
     </div>
   );
 };
