@@ -1,4 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
+import color from './color';
 import Vector2 from "./vector";
 
 
@@ -8,17 +9,19 @@ export class Particle {
     public dir: Vector2
     public life:number = 0
     public maxLife:number
+    public color: color
     public _update:() => void
     public onInit:() => void 
     public onDeath:() => void 
     public id:string = uuidv4()
 
-    constructor(dir:Vector2, maxLife:number, update: () => void, onInit?:()=> void, onDeath?:() => void) {
+    constructor(dir:Vector2, maxLife:number,color:color, update: () => void, onInit?:()=> void, onDeath?:() => void) {
         this.dir = dir
         this.maxLife = maxLife
         this._update = update
         this.onInit = onInit ? onInit : () => {} 
         this.onDeath = onDeath ? onDeath: () => {}
+        this.color = color
     }
 
     getStatus():ParticleStatus {
@@ -56,7 +59,6 @@ class ParticleSystem  {
 
     update() {
         this.particles.forEach(p => {
-            console.log(`current lifecycle: ${p.life} max ${p.maxLife}`)
             const status = p.getStatus()
             switch(status) {
                 case "start": 

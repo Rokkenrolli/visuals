@@ -2,19 +2,20 @@ import { MousePos } from "../components/Canvas"
 import { EffectRender } from "../utils/effect"
 import ParticleSystem, { Particle } from "../utils/Particle"
 import Vector2 from './../utils/vector';
+import color from "../utils/color";
 
-
-const createFollowParticle  =(ctx: CanvasRenderingContext2D,  mousePos: MousePos,color:string) => {
+const createFollowParticle  =(ctx: CanvasRenderingContext2D,  mousePos: MousePos,color:color) => {
     const initialPos = new Vector2(mousePos.x, mousePos.y)
-    const dir = new Vector2(1,0)
+    const dir = mousePos.dir
+    const speed = 1
     const update = () => {
         ctx.beginPath()
-        ctx.fillStyle = color
+        ctx.fillStyle = color.toString()
         ctx.arc(initialPos.x, initialPos.y, 5, 0, 2*Math.PI)
         ctx.fill()
-        initialPos.add(dir)
+        initialPos.add(dir.multiply(speed))
     }
-    return new Particle(dir, 300, update)
+    return new Particle(dir, 300,color, update,)
 }
 
 
@@ -35,12 +36,10 @@ const drawMouse:EffectRender = (ctx, frameCount, mousePos, particleSystem ) => {
     ctx.fillStyle = "purple"
     ctx.arc(mousePos.x, mousePos.y, 5, 0, 2*Math.PI)
     ctx.fill()
-    console.log("particle system", particleSystem)
     if (!particleSystem) {
         return
     }
-    const particle = createFollowParticle(ctx, mousePos, "white")
-    console.log("creating particle", particle)
+    const particle = createFollowParticle(ctx, mousePos, color.random())
     particleSystem.add(particle)
 }
 

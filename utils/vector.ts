@@ -34,14 +34,17 @@ class Vector2 {
     multiply(value:number) {
         this.x*= value
         this.y*= value
+        return this
     }
     divide(value:number) {
         assert(value !== 0, new Error("Cannot divide by zero"))
         this.x/=value
         this.y/=value
+        return this
     }
-    normalize() {
+    normalize():Vector2 {
         this.divide(this.length())
+        return this
     }
     static zero():Vector2 {
         return new Vector2(0,0)

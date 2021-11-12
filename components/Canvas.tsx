@@ -1,4 +1,5 @@
 import { RefObject, useCallback, useEffect, useRef, useState } from "react";
+import Vector2 from "../utils/vector";
 
 export interface CanvasProps {
   width: number;
@@ -14,6 +15,7 @@ export interface CanvasProps {
 export interface MousePos {
   x: number;
   y: number;
+  dir: Vector2
 }
 
 const Canvas: React.FC<CanvasProps> = ({
@@ -29,15 +31,16 @@ const Canvas: React.FC<CanvasProps> = ({
     canvasRef: RefObject<HTMLCanvasElement>,
     event: React.MouseEvent<HTMLCanvasElement, MouseEvent>
   ) => {
-    if (!canvasRef || !canvasRef.current) {
+    if (!canvasRef || !canvasRef.current ||!event) {
       mousePos = undefined;
       return;
     }
     const canvas = canvasRef.current;
     const rect = canvas.getBoundingClientRect();
-    mousePos = event
-      ? { x: event.clientX - rect.left, y: event.clientY - rect.top }
-      : undefined;
+    const previous = mousePos
+    const newX = event.clientX - rect.left
+    const newY = event.clientY - rect.top
+    mousePos = { x: newX, y:newY, dir: previous ? new Vector2(newX-previous.x, newY-previous.y).normalize() : Vector2.zero()  }
   };
 
   const incrementWithBound = (currentNumber: number, bound: number): number => {
